@@ -1,0 +1,19 @@
+# Node modules dan folder build
+node_modules/
+dist/
+build/
+
+# Cypress cache dan hasil run (screenshots dan video)
+cypress/videos/
+cypress/screenshots/
+
+# File environment lokal sensitif
+cypress.env.json
+.env
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
