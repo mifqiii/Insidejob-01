@@ -7,10 +7,6 @@ build/
 cypress/videos/
 cypress/screenshots/
 
-# File environment lokal sensitif
-cypress.env.json
-.env
-
 # Log files
 *.log
 
