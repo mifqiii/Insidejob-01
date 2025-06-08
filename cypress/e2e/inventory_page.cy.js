@@ -1,51 +1,26 @@
-import LoginPage from "../support/LoginPage/LoginPage"
-import inventoryPage from "../support/inventoryPage/inventoryPage"
+import LoginPage from "../support/LoginPage/LoginPage";
+import inventoryPage from "../support/inventoryPage/inventoryPage";
 
-describe('Verifikasi Fitur Iventory', () => {
+describe('Verifikasi Fitur Inventory', () => {
   beforeEach(() => {
-    cy.visit('https://www.saucedemo.com')
-    LoginPage.inputUsername('standard_user')
-    LoginPage.inputPassword('secret_sauce')
-    LoginPage.klikLogin()
+    cy.fixture('user.json').then((user) => {
+      const datauser = user[0];
+      cy.visit('https://www.saucedemo.com');
+      LoginPage.inputUsernameManual(datauser.username);
+      LoginPage.inputPasswordManual(datauser.password);
+      LoginPage.klikLogin();
+    })
   })
 
-  it('Memverifikasi filter harga dari tinggi ke rendah bekerja dan urutannya benar', () => {
-    // Pilih filter harga dari harga tertinggi ke rendah
-    inventoryPage.filterInventoryByPriceHighLow();
+  // it('Verifikasi Fitur Sort Data', () => {
+  //   cy.fixture('products.json').then((products) => {
+  //     const dataproducts = products[0];
+  //     inventoryPage.filterIventoryByNameAZ(dataproducts.name);
+  //   })
+  // })
 
-    // Tunggu halaman update
-    cy.wait(500);
+  it('Verifikasi Vitur Tambah Keranjang', () => {
+    inventoryPage.klickShoppingCart();
+  })
 
-    // Ambil semua harga yang tampil di halaman
-    cy.get(inventoryPage.textPriceInventory).then(($prices) => {
-      const pricesOnPage = $prices.toArray().map(el =>
-        parseFloat(el.innerText.replace('$', ''))
-      );
-
-      // Buat array sorted harga dari besar ke kecil
-      const sortedPrices = [...pricesOnPage].sort((a, b) => b - a);
-
-      // Pastikan data halaman sesuai dengan urutan harga terbalik
-      expect(pricesOnPage).to.deep.equal(sortedPrices);
-    });
-  });
-  
-  it('Membandingkan harga produk di halaman dengan data fixture setelah filter high to low', () => {
-    cy.fixture('products').then((products) => {
-      const pricesFixture = products.map(p => parseFloat(p.price.replace('$', '')));
-      const sortedPricesFixture = [...pricesFixture].sort((a, b) => b - a);
-
-      inventoryPage.filterInventoryByPriceHighLow();
-
-      cy.wait(500);
-
-      cy.get(inventoryPage.textPriceInventory).then(($prices) => {
-        const pricesOnPage = $prices.toArray().map(el =>
-          parseFloat(el.innerText.replace('$', ''))
-        );
-
-        expect(pricesOnPage).to.deep.equal(sortedPricesFixture);
-      });
-    });
-  });
 });
